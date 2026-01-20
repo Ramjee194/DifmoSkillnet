@@ -1,15 +1,13 @@
 "use client"
 import { motion } from 'framer-motion'
-import { SearchParamsContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
-import { useSearchParams } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
 import { FiPhone, FiMail, FiMapPin, FiSend } from 'react-icons/fi'
 import Navbar from '../../navbar';
+import { useRouter } from 'next/router';
 
 
 export default function page () {
-  const searchParams = useSearchParams();
-
+const router = useRouter()
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [Name, setName] = useState("");
@@ -20,10 +18,14 @@ export default function page () {
   
 
 
-  useEffect(() => {
-    setTitle(searchParams.get("courseTitle") ?? "");
-    setPrice(searchParams.get("coursePrice") ?? "");
-  }, [searchParams]);
+ useEffect(() => {
+    if (!router.isReady) return;
+
+    const { courseTitle, coursePrice } = router.query;
+
+    setTitle(title ?? "");
+    setPrice(price ?? "");
+  }, [router.isReady, router.query]);
 
   const enrollCourses = async () => {
     const res = await fetch("/api/enroll", {
