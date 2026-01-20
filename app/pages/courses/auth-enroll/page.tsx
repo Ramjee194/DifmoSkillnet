@@ -1,13 +1,13 @@
-
+"use client"
 import { motion } from 'framer-motion'
 import { use, useEffect, useState } from 'react';
 import { FiPhone, FiMail, FiMapPin, FiSend } from 'react-icons/fi'
 import Navbar from '../../navbar';
-import { useRouter } from 'next/router';
+
 
 
 export default function page () {
-const router = useRouter()
+const [mount,setMount]=useState(false)
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [Name, setName] = useState("");
@@ -17,16 +17,20 @@ const router = useRouter()
   
   
 
+useEffect (()=>{
+    setMount(true)
+},[])
 
 useEffect(() => {
-  if (!router.isReady) return;
+    if (!mount) return;
 
-  const titleParam = router.query.title;
-  const priceParam = router.query.price;
+    const params = new URLSearchParams(window.location.search);
 
-  setTitle(typeof titleParam === "string" ? titleParam : "");
-  setPrice(typeof priceParam === "string" ? priceParam : "");
-}, [router.isReady, router.query]);
+    setTitle(params.get("title") ?? "");
+    setPrice(params.get("price") ?? "");
+  }, [mount]);
+
+  if (!mount) return null;
 
 
   const enrollCourses = async () => {
